@@ -23,19 +23,13 @@
 #include "ServiceUserAccess.h"
 #include <QDebug>
 
+Q_GLOBAL_STATIC(FablabAuthenticator, fablabAuthenticator);
+
 FablabAuthenticator::FablabAuthenticator(QObject* parent) : IAuthenticator(parent)
 {
     QString servicePass = QProcessEnvironment::systemEnvironment().value("SERVICE_USER_PASS", "");
     QString maintainancePass = QProcessEnvironment::systemEnvironment().value("MAINTAINANCE_USER_PASS", "");
 
-    if(!servicePass.isEmpty())
-    {
-        userPtr serviceUser =  DefaultAuthenticator::instance()->createUser("service", servicePass);// new ServiceUser("service", servicePass, this);
-        serviceUser->setUserPermission("service",true,false);
-        serviceUser->setUserPermission("lab.service", true, false);
-        serviceUser->setUserPermission("lab.admin", true);
-        _serviceUsers.insert("service", iUserPtr(serviceUser));
-    }
 
     if(!maintainancePass.isEmpty())
     {
@@ -45,7 +39,7 @@ FablabAuthenticator::FablabAuthenticator(QObject* parent) : IAuthenticator(paren
         QVariantMap userData;
         userData["role"] = USER_ROLE_ADMIN_STRING;
         maintainanceUser->setUserData(userData);
-        _serviceUsers.insert("maintainance", iUserPtr(maintainanceUser));
+        addUser("maintainance", iUserPtr(maintainanceUser));
     }
 }
 
@@ -57,4 +51,14 @@ iUserPtr FablabAuthenticator::getUser(QString userID)
 
     return _serviceUsers.value(userID, nullptr);
 
+}
+
+void FablabAuthenticator::addUser(QString userID, iUserPtr user)
+{
+    _serviceUsers.insert(userID, user);
+}
+
+FablabAuthenticator *FablabAuthenticator::instance()
+{
+    return fablabAuthenticator;
 }

@@ -22,14 +22,17 @@
 #include <QObject>
 #include "Server/Authentication/IAuthenticator.h"
 #include "Server/Authentication/IUser.h"
+#include "2logcoreplugin_global.h"
 #include <QProcessEnvironment>
 
-class FablabAuthenticator : public IAuthenticator
+class QHFABLABCONTROLSHARED_EXPORT FablabAuthenticator : public IAuthenticator
 {
 
 public:
-    FablabAuthenticator(QObject* parent);
+    FablabAuthenticator(QObject* parent = nullptr);
     iUserPtr getUser(QString userID) override;
+    void addUser(QString userID, iUserPtr user);
+    static FablabAuthenticator* instance();
 
 private:
     QMap<QString, iUserPtr> _serviceUsers;

@@ -61,7 +61,7 @@ bool _2logCorePlugin::init(QVariantMap parameters)
     ResourceManager::instance()->addResourceFactory(new ContainerResourceFactory("users", "groups", this));
     ResourceManager::instance()->addResourceFactory(new ContainerResourceFactory("groups", "entities", this));
     ResourceManager::instance()->addResourceFactory(new StatisticsObjectResourceFactory(this));
-    AuthenticationService::instance()->registerAuthenticator(new FablabAuthenticator(this));
+    AuthenticationService::instance()->registerAuthenticator(FablabAuthenticator::instance());
     DevicePermissionManager::instance()->registerPermissionChecker(devicePermissionCheckerPtr(new DevicePermissionHandler()));
     ServiceUserAccess::setRightLevels();
     return true;
