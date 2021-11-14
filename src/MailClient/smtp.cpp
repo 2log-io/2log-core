@@ -99,26 +99,21 @@ Smtp::~Smtp()
 void Smtp::stateChanged(QAbstractSocket::SocketState socketState)
 {
     Q_UNUSED( socketState);
- //   qDebug() <<"stateChanged " << socketState;
 }
 
 void Smtp::errorReceived(QAbstractSocket::SocketError socketError)
 {
     Q_UNUSED( socketError);
-   // qDebug() << "error " <<socketError;
 }
 
 void Smtp::disconnected()
 {
 
-  //  qDebug() <<"disconneted";
- //   qDebug() << "error "  << socket->errorString();
 }
 
 void Smtp::connected()
 {
-//    qDebug() << "Connected ";
-//    qDebug()<<socket->readAll();
+
 }
 
 void Smtp::readyRead()
@@ -150,32 +145,6 @@ void Smtp::readyRead()
             state = Auth;
         }
     }
-    //No need, because I'm using socket->startClienEncryption() which makes the SSL handshake for you
-    /*else if (state == Tls && responseLine == "250")
-    {
-        // Trying AUTH
-        qDebug() << "STarting Tls";
-        *t << "STARTTLS" << "\r\n";
-        t->flush();
-        state = HandShake;
-    }*/
-//    else if (state == HandShake && responseLine == "250")
-//    {
-//        qDebug()<<"B";
-//        socket->startClientEncryption();
-//        if(!socket->waitForEncrypted(timeout))
-//        {
-//            qDebug() << socket->errorString();
-//            state = Close;
-//        }
-
-
-//        //Send EHLO once again but now encrypted
-
-//        *t << "EHLO localhost" << "\r\n";
-//        t->flush();
-//        state = Auth;
-//    }
     else if (state == Auth && responseLine == "250")
     {
         // Trying AUTH
@@ -223,7 +192,6 @@ void Smtp::readyRead()
     }
     else if ( state == Data && responseLine == "250" )
     {
-
         *t << "DATA\r\n";
         t->flush();
         state = Body;
@@ -237,7 +205,6 @@ void Smtp::readyRead()
     }
     else if ( state == Quit && responseLine == "250" )
     {
-
         *t << "QUIT\r\n";
         t->flush();
         // here, we just close.
@@ -252,7 +219,6 @@ void Smtp::readyRead()
     else
     {
         // something broke.
-
         state = Close;
         emit status( tr( "Failed to send message" ) );
     }
