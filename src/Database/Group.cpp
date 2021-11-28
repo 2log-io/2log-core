@@ -101,8 +101,7 @@ QString Group::getUUID()
 QVariantList Group::permissions() const
 {
     QVariantList entities;
-    auto tempData = _permissions->getData();
-    QListIterator<QVariant> it(tempData);
+    QListIterator<QVariant> it( _permissions->getData());
     while(it.hasNext())
     {
         entities.append(it.next().toMap().value("data"));
