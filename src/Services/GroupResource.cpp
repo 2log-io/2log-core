@@ -27,7 +27,8 @@ GroupResource::GroupResource(QVariantMap parameters, QObject *parent) : ListReso
     setAllowUserAccess(false);
     connect(GroupAccess::instance(), &GroupAccess::groupInserted, this, &GroupResource::groupInserted);
     connect(GroupAccess::instance(), &GroupAccess::groupDeleted, this, &GroupResource::groupDeleted);
-    QListIterator<groupPtr> it(GroupAccess::instance()->getGroups());
+    auto tempGroups = GroupAccess::instance()->getGroups();
+    QListIterator<groupPtr> it(tempGroups);
     while(it.hasNext())
     {
         registerGroup(it.next());

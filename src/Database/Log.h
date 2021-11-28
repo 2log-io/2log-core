@@ -53,6 +53,8 @@ struct Log
     QDateTime       start;
     QDateTime       end;
     QString         description;
+    QString         externalReference;
+    QString         externalType;
     QString         logID;
     QString         userName;
     QString         executive;
@@ -76,6 +78,8 @@ struct Log
         log["endTime"] = end;
         log["price"] = price;
         log["executive"] = executive;
+        log["extType"] = externalType;
+        log["extRef"] = externalReference;
         if(!logID.isEmpty())
             log["logID"] = logID;
         return log;
@@ -102,6 +106,8 @@ struct Log
         userName = docMap["userName"].toString();
         price = docMap["price"].toInt();
         executive = docMap["executive"].toString();
+        externalType = docMap["extType"].toString();
+        externalReference = docMap["extRef"].toString();
         if(docMap.contains("user"))
         {
             QVariantList userList = docMap["user"].toList();
