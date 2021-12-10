@@ -59,6 +59,7 @@ struct Log
     QString         userName;
     QString         executive;
     QVariantMap     userData;
+    QVariant        internalAttachment;
 
     QVariantMap toVariant() const
     {
