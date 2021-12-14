@@ -18,6 +18,7 @@
 
 #include "MailService.h"
 #include <QProcessEnvironment>
+#include <QtConcurrent>
 
 Q_GLOBAL_STATIC(MailService, mailService);
 
@@ -26,11 +27,34 @@ MailService::MailService(QObject *parent) : QObject(parent)
     _host = QProcessEnvironment::systemEnvironment().value("MAIL_HOST", "");
     _user = QProcessEnvironment::systemEnvironment().value("MAIL_USER", "");
     _pass = QProcessEnvironment::systemEnvironment().value("MAIL_PASS", "");
-    _addr = QProcessEnvironment::systemEnvironment().value("MAIL_ADDR", _user);
-    _port = QProcessEnvironment::systemEnvironment().value("MAIL_PORT", "25").toInt();
+    _addr = QProcessEnvironment::systemEnvironment().value("MAIL_ADDR", "");
+    _sender = QProcessEnvironment::systemEnvironment().value("MAIL_SENDER", "");
 
-    if(_host.isEmpty() || _user.isEmpty() || _pass.isEmpty())
+    QString type = QProcessEnvironment::systemEnvironment().value("MAIL_CONNECTION_TYPE", "SSL");
+
+    if(type == "SSL" || type.isEmpty())
+    {
+        _port = QProcessEnvironment::systemEnvironment().value("MAIL_PORT", "465").toUInt();
+        _connType = SmtpClient::TlsConnection;
+    }
+    else if(type == "TLS")
+    {
+        _port = QProcessEnvironment::systemEnvironment().value("MAIL_PORT", "587").toUInt();
+        _connType = SmtpClient::TlsConnection;
+    }
+    else if (type == "TCP")
+    {
+        _port = QProcessEnvironment::systemEnvironment().value("MAIL_PORT", "25").toUInt();
+        _connType = SmtpClient::TcpConnection;
+    }
+
+    if(_host.isEmpty() || _user.isEmpty() || _pass.isEmpty()) {
+        qWarning()<< "eMail is not configured. Set the apropriate environment variables.";
         return;
+    }
+
+    qDebug()<<"Mail-Port:"<<_port ;
+    qDebug()<<"Connection-Type:"<<type;
 
     _init = true;
 }
@@ -43,11 +67,43 @@ MailService *MailService::instance()
 bool MailService::sendMail(QString receiver, QString subject, QString content)
 {
     if(!_init)
+    {
+        qDebug() << "No smtp configuration. Can't send eMail.";
         return false;
+    }
+    QtConcurrent::run([=]()
+    {
+        SmtpClient smtp(_host, _port, _connType);
+        smtp.setUser(_user);
+        smtp.setPassword(_pass);
 
-    // object deletes itself
-    _smtp = new Smtp(_user, _pass, _host, _port);
-    _smtp->sendMail(_addr, receiver, subject, content);
+        MimeMessage message;
+        EmailAddress sender(_addr, _sender);
+        message.setSender(&sender);
+        EmailAddress to(receiver);
+        message.addRecipient(&to);
+        message.setSubject(subject);
+
+        MimeText text;
+
+        text.setText(content);
+        message.addPart(&text);
+
+        if (!smtp.connectToHost()) {
+            qDebug() << "Sending eMail: Failed to connect to host!" << endl;
+        }
+
+        if (!smtp.login()) {
+            qDebug() << "Sending eMail: Failed to login!" << endl;
+        }
+
+        if (!smtp.sendMail(message)) {
+            qDebug() << "Sending eMail: Failed to send mail!" << endl;
+        }
+
+        qDebug() << "Sending eMail: Succeeded" << endl;
+        smtp.quit();});
+
     return true;
 }
 

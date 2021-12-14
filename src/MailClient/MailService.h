@@ -20,7 +20,7 @@
 #define MAILSERVICE_H
 
 #include <QObject>
-#include "smtp.h"
+#include "SmtpMime"
 
 class MailService : public QObject
 {
@@ -35,10 +35,10 @@ public:
     bool sendResetPasswordMail(QVariantMap data);
 
 private:
-    Smtp* _smtp = nullptr;
+    SmtpClient::ConnectionType _connType = SmtpClient::SslConnection;
     int _port;
 
-    QString _user, _pass, _host,  _addr;
+    QString _user, _pass, _host,  _addr, _sender;
     bool _init = false;
 };
 

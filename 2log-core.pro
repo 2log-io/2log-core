@@ -30,7 +30,7 @@ CONFIG      += plugin
 INCLUDEPATH += ../quickhub-pluginsystem/src
 LIBS += -lQHPluginSystem -L../bin/lib
 
-
+include(src/MailClient/SmtpClient-for-Qt/SMTPEmail.pri)
 INCLUDEPATH += /usr/local/include/bsoncxx/v_noabi
 DEPENDPATH += /usr/local/include/bsoncxx/v_noabi
 
@@ -124,7 +124,6 @@ HEADERS += \
     src/Services/UserObjectResourceFactory.h \
     src/Services/FablabAuthenticator.h \
     src/Statistics/Database/StatisticQueries.h \
-    \ \
     src/Statistics/Metrics/MachineStatisticsObjectResource.h \
     src/Statistics/Metrics/MetricsObjectResource.h \
     src/Statistics/Metrics/StatisticsObjectResourceFactory.h
