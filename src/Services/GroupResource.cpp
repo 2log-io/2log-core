@@ -128,7 +128,7 @@ void GroupResource::registerGroup(groupPtr group)
 void GroupResource::groupInserted(groupPtr group)
 {
     registerGroup(group);
-    Q_EMIT itemInserted(createTemplate(group->toVariant()),_groups.count()-1 , iUserPtr());
+    Q_EMIT itemAppended(createTemplate(group->toVariant()) , iUserPtr());
 }
 
 void GroupResource::groupDeleted(groupPtr group)
