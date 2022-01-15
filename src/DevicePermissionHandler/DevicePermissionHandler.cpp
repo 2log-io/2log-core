@@ -59,7 +59,7 @@ bool DevicePermissionHandler::checkRPCPermission(QString token, DeviceHandle* ha
     iIdentityPtr user = AuthenticationService::instance()->validateToken(token);
     if(user.isNull())
         return false;
-    return user->isAuthorizedTo(LAB_MODIFY_DEVICES);
+    return user->isAuthorizedTo(LAB_MODIFY_DEVICES) || user->isAuthorizedTo(SERVICE);
 }
 
 bool DevicePermissionHandler::checkSetupPermission(QString token, DeviceHandle *handle)
