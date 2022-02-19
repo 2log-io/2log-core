@@ -48,7 +48,7 @@ MailService::MailService(QObject *parent) : QObject(parent)
         _connType = SmtpClient::TcpConnection;
     }
 
-    if(_host.isEmpty() || _user.isEmpty() || _pass.isEmpty()) {
+    if(_host.isEmpty()) {
         qWarning()<< "eMail is not configured. Set the apropriate environment variables.";
         return;
     }
@@ -74,8 +74,10 @@ bool MailService::sendMail(QString receiver, QString subject, QString content)
     QtConcurrent::run([=]()
     {
         SmtpClient smtp(_host, _port, _connType);
-        smtp.setUser(_user);
-        smtp.setPassword(_pass);
+        if(!_user.isEmpty())
+            smtp.setUser(_user);
+        if(!_pass.isEmpty())
+            smtp.setPassword(_pass);
 
         MimeMessage message;
         EmailAddress sender(_addr, _sender);
