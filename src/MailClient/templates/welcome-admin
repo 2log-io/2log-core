@@ -1,6 +1,8 @@
 Hallo $USERNAME,
 
-Willkommen bei 2log! Dir wurde soeben ein Administrations-Konto eingerichtet.
+Willkommen bei 2log!
+
+Dir wurde soeben ein Administrations-Konto eingerichtet.
 Du kannst dich mit folgenden Zugangsdaten unter $2LOG_URL einloggen.
 
 Login:      $LOGIN
