@@ -24,7 +24,9 @@ MailManager::MailManager(QObject *parent)
             QDirIterator it(":/templates");
             while(it.hasNext())
             {
-                QFile::copy(it.next(), _emailTemplatePath + it.fileName());
+                it.next();
+                QFile::copy(it.filePath(), _emailTemplatePath + it.fileName());
+                qInfo()<<"Copy template from : "<< it.filePath() << "to" <<  it.fileName();
             }
         }
         _initialized = true;
@@ -39,6 +41,8 @@ bool MailManager::sendMailFromTemplate(QString receiver, const QString &template
     if( file.open(QFile::ReadOnly))
     {
         QString templateString = file.readAll();
+        file.close();
+        qDebug() <<"Open template file from filesystem to send eMail to"<< receiver;
         ParsedTemplate mailContent = parseTemplate(templateString, data);
         return MailService::instance()->sendMail(receiver, mailContent.subject, mailContent.message);
     }
@@ -48,6 +52,8 @@ bool MailManager::sendMailFromTemplate(QString receiver, const QString &template
     if(qrcFile.open(QFile::ReadOnly))
     {
         QString templateString = qrcFile.readAll();
+        file.close();
+        qDebug() <<"Open template file from resources to send eMail to"<< receiver;
         ParsedTemplate mailContent = parseTemplate(templateString, data);
         return MailService::instance()->sendMail(receiver, mailContent.subject, mailContent.message);
     }
