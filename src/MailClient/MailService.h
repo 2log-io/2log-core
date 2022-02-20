@@ -15,7 +15,6 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef MAILSERVICE_H
 #define MAILSERVICE_H
 
@@ -26,13 +25,10 @@ class MailService : public QObject
 {
     Q_OBJECT
 
-
 public:
     explicit MailService(QObject *parent = nullptr);
     static MailService* instance();
     bool sendMail(QString receiver, QString subject, QString content);
-    bool sendWelcomeMail(QVariantMap data);
-    bool sendResetPasswordMail(QVariantMap data);
 
 private:
     SmtpClient::ConnectionType _connType = SmtpClient::SslConnection;

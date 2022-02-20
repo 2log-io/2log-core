@@ -95,62 +95,18 @@ bool MailService::sendMail(QString receiver, QString subject, QString content)
             qDebug() << "Sending eMail: Failed to connect to host!" << endl;
         }
 
-        if (!smtp.login()) {
+        if (!smtp.login() && !_user.isEmpty()) {
             qDebug() << "Sending eMail: Failed to login!" << endl;
         }
 
         if (!smtp.sendMail(message)) {
             qDebug() << "Sending eMail: Failed to send mail!" << endl;
         }
-
-        qDebug() << "Sending eMail: Succeeded" << endl;
+        else
+        {
+            qDebug() << "Sending eMail: Succeeded" << endl;
+        }
         smtp.quit();});
 
     return true;
 }
-
-bool MailService::sendWelcomeMail(QVariantMap data)
-{
-    QString url = QProcessEnvironment::systemEnvironment().value("FRRONTEND_HOST", "");
-
-    if(url.isEmpty())
-        url = QProcessEnvironment::systemEnvironment().value("VIRTUAL_HOST", "").replace(".io",".in");
-
-    QString userName = data["userName"].toString();
-    QString login = data["login"].toString();
-    QString password = data["password"].toString();
-    QString receiver = data["receiver"].toString();
-
-      QString message =
-    "Hallo "+userName+",\r\n\r\n"
-    "Willkommen bei 2log! Dir wurde soeben ein Administrations-Konto eingerichtet.\r\n"
-    "Du kannst dich mit folgenden Zugangsdaten unter "+url +" einloggen.\r\n\r\n"
-    "Login:\t\t"+login+"\r\n"
-    "Passwort:\t"+password+"\r\n\r\n"
-    "Dein 2log Team";
-    return sendMail(receiver, "Wilkommen bei 2log!", message);
-}
-
-bool MailService::sendResetPasswordMail(QVariantMap data)
-{
-    QString url = QProcessEnvironment::systemEnvironment().value("FRRONTEND_HOST", "");
-
-    if(url.isEmpty())
-        url = QProcessEnvironment::systemEnvironment().value("VIRTUAL_HOST", "").replace(".io",".in");
-
-    QString userName = data["userName"].toString();
-    QString login = data["login"].toString();
-    QString password = data["password"].toString();
-    QString receiver = data["receiver"].toString();
-
-      QString message =
-    "Hallo "+userName+",\r\n\r\n"
-    "Willkommen bei 2log! Dir wurde soeben ein neues Password zugewiesen.\r\n"
-    "Du kannst dich mit folgenden Zugangsdaten unter "+url +" einloggen.\r\n\r\n"
-    "Login:\t\t"+login+"\r\n"
-    "Passwort:\t"+password+"\r\n\r\n"
-    "Dein 2log Team";
-    return sendMail(receiver, "Dein neues 2log Passwort", message);
-}
-
-

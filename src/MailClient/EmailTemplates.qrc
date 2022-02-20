@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>templates/member-transaction</file>
+        <file>templates/reset-password</file>
+        <file>templates/welcome-admin</file>
+        <file>templates/welcome-member</file>
+    </qresource>
+</RCC>

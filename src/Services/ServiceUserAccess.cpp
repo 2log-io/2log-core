@@ -21,7 +21,7 @@
 #include "Database/UserAccess.h"
 #include "Server/Authentication/User.h"
 #include "Server/Authentication/DefaultAuthenticator.h"
-#include "MailClient/MailService.h"
+#include "MailClient/MailManager.h"
 #include <QDebug>
 
 
@@ -50,8 +50,8 @@ QVariantMap ServiceUserAccess::addServiceUser(QString userID,  QString userName,
     QVariantMap eMailData;
     eMailData["userName"] = userName;
     eMailData["login"] = userID;
-     eMailData["password"] = password;
-    eMailData["receiver"] = eMail;
+    eMailData["password"] = password;
+
 
     iUserPtr user = DefaultAuthenticator::instance()->createUser(userID, password, &err);
 
@@ -85,7 +85,8 @@ QVariantMap ServiceUserAccess::addServiceUser(QString userID,  QString userName,
         answer["command"] = "user:add:success";
         answer["errrorcode"] = err;
         qInfo()<<"User "+user->identityID()+" added successfully.";
-        MailService::instance()->sendWelcomeMail(eMailData);
+        MailManager manager;
+        manager.sendMailFromTemplate(eMail, "welcome-admin", eMailData);
     }
     else
     {

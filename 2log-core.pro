@@ -47,6 +47,7 @@ SOURCES += \
     src/Database/GroupPermissionContainer.cpp \
     src/Database/NestedDataContainerManager.cpp \
     src/DevicePermissionHandler/DevicePermissionHandler.cpp \
+    src/MailClient/MailManager.cpp \
     src/MailClient/MailService.cpp \
     src/MailClient/smtp.cpp \
     src/ResourcePermissions/IResourcePermissionCheck.cpp \
@@ -91,6 +92,7 @@ HEADERS += \
     src/Database/GroupPermissionContainer.h \
     src/Database/NestedDataContainerManager.h \
     src/DevicePermissionHandler/DevicePermissionHandler.h \
+    src/MailClient/MailManager.h \
     src/MailClient/MailService.h \
     src/MailClient/smtp.h \
     src/ResourcePermissions/IResourcePermissionCheck.h \
@@ -137,3 +139,6 @@ CONFIG += c++14
 
 DISTFILES += \
     src/2logCorePlugin.json
+
+RESOURCES += \
+    src/MailClient/EmailTemplates.qrc

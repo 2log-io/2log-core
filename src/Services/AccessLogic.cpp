@@ -26,7 +26,7 @@
 #include "../Database/GroupPermissionContainer.h"
 #include "../Database/CardContainer.h"
 #include "Database/MongoDB.h"
-#include "MailClient/MailService.h"
+#include "MailClient/MailManager.h"
 #include "Server/Authentication/AuthentificationService.h"
 
 AccessLogic::AccessLogic(QObject *parent) : QObject(parent)
@@ -414,7 +414,6 @@ QVariant AccessLogic::deleteUser(QString userID)
     {
         return true;
     }
-
     return false;
 }
 
@@ -435,9 +434,9 @@ bool AccessLogic::resetPassword(QString userID)
     data["userName"] = user->userData().name;
     data["login"] = user->userLogin();
     data["password"] = newPass;
-    data["receiver"] = user->getEMail();
 
-    MailService::instance()->sendResetPasswordMail(data);
+    MailManager mailMan;
+    mailMan.sendMailFromTemplate(user->getEMail(),"reset-password", data);
     return true;
 }
 
