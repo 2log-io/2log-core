@@ -32,7 +32,7 @@
 #include "ResourcePermissions/IResourcePermissionReply.h"
 #include <QFuture>
 #include <QtConcurrent>
-
+#include "MailClient/MailManager.h"
 
 LabService::LabService(QObject *parent) : IService(parent)
 {
@@ -246,6 +246,12 @@ QVariant LabService::syncCalls(QString call, QString token, QVariant argument)
        // TODO: refactor this to a mutexed, atomar operation
        int balance = ptr->getBalance();
        ptr->setBalance(balance + val);
+
+        QVariantMap summary;
+        summary["total"] = val;
+        summary["username"] = ptr->getName();
+        summary["balance"] = ptr->getBalance();
+        MailManager().sendMailFromTemplate(ptr->getEMail(),"member-transaction", summary);
 
        Log log;
        log.userID = userID;

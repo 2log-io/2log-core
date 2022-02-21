@@ -74,7 +74,16 @@ MailManager::ParsedTemplate MailManager::parseTemplate(QString templateString, Q
     {
         dataIt.next();
         QString key = "$"+dataIt.key().toUpper();
-        QString value = dataIt.value().toString();
+        QString value;
+
+        if(key == "$TOTAL" || key == "$BALANCE")
+        {
+            value = QLocale().toCurrencyString((float) dataIt.value().toInt() / 100, "€");
+        }
+        else
+        {
+            value  = dataIt.value().toString();
+        }
         templateString = templateString.replace(key, value);
     }
 

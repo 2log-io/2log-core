@@ -1,0 +1,11 @@
+Willkommen bei 2log!
+
+Hallo $USERNAME,
+
+Es ist soweit! Für dich wurde soeben ein 2log-Konto eingerichtet.
+Du kannst dich mit folgenden Zugangsdaten unter $2LOG_URL einloggen.
+
+Login:      $LOGIN
+Passwort:   $PASSWORD
+
+Dein 2log Team

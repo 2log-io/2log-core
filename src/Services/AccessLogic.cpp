@@ -434,9 +434,7 @@ bool AccessLogic::resetPassword(QString userID)
     data["userName"] = user->userData().name;
     data["login"] = user->userLogin();
     data["password"] = newPass;
-
-    MailManager mailMan;
-    mailMan.sendMailFromTemplate(user->getEMail(),"reset-password", data);
+    MailManager().sendMailFromTemplate(user->getEMail(),"reset-password", data);
     return true;
 }
 

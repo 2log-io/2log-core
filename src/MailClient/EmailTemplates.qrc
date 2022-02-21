@@ -4,5 +4,6 @@
         <file>templates/reset-password</file>
         <file>templates/welcome-admin</file>
         <file>templates/welcome-member</file>
+        <file>templates/member-payment</file>
     </qresource>
 </RCC>
