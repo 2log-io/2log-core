@@ -19,6 +19,7 @@
 #include "MailService.h"
 #include <QProcessEnvironment>
 #include <QtConcurrent>
+#include "SmtpClient-for-Qt/src/smtpclient.h"
 
 Q_GLOBAL_STATIC(MailService, mailService);
 
@@ -74,6 +75,18 @@ bool MailService::sendMail(QString receiver, QString subject, QString content)
     QtConcurrent::run([=]()
     {
         SmtpClient smtp(_host, _port, _connType);
+        connect(&smtp, &SmtpClient::smtpError, &smtp, [](SmtpClient::SmtpError e)
+        {
+            switch(e)
+            {
+                case SmtpClient::ConnectionTimeoutError: qWarning()<< "Sending eMail failed - ConnectionTimeoutError."; return;
+                case SmtpClient::ResponseTimeoutError: qWarning()<< "Sending eMail failed - ResponseTimeoutError.";break;
+                case SmtpClient::SendDataTimeoutError:qWarning()<< "Sending eMail failed - SendDataTimeoutError."; break;
+                case SmtpClient::AuthenticationFailedError: qWarning()<< "Sending eMail failed - AuthenticationFailedError";break;
+                case SmtpClient::ServerError:qWarning()<< "Sending eMail failed - ServerError (4xx smtp error)"; break;    // 4xx smtp error
+                case SmtpClient::ClientError: qWarning()<< "Sending eMail failed - ClientError (5xx smtp error)"; break;     // 5xx smtp error
+            }
+        });
         if(!_user.isEmpty())
             smtp.setUser(_user);
         if(!_pass.isEmpty())
